@@ -6,12 +6,7 @@ const webpack = require('webpack');
 const path = require('path');
 module.exports = {
     entry: {
-        'index': [
-            'react-hot-loader/patch',
-            `webpack-dev-server/client?http://127.0.0.1:9006`,
-            'webpack/hot/only-dev-server',
-            './src/index.js'
-        ]
+        index: './src/index.js'
     },
     output: {
         filename: '[name].js',
@@ -20,23 +15,6 @@ module.exports = {
         publicPath: '/dist'
     },
     devtool: 'cheap-module-eval-source-map',
-
-    devServer: {
-        contentBase: [path.join(__dirname, "html"), path.join(__dirname, "dist")],
-        compress: true,
-        port: parseInt(process.env.PORT) || 9006,
-        host: "0.0.0.0",
-        hot: true,
-        inline: true,
-        publicPath: "/dist/",
-        historyApiFallback: {
-            rewrites: [{
-                from: /^\/$/,
-                to: '/html/index.html'
-            }]
-        },
-        watchContentBase: true
-    },
     performance: {
         hints: false
     },
@@ -93,7 +71,7 @@ module.exports = {
         new webpack.NamedModulesPlugin(),
         new webpack.DllReferencePlugin({
             context: __dirname,
-            manifest: require('./dist/vendor-manifest.json')
+            manifest: require('./dist/manifest.dll.json')
         })
     ]
 };
