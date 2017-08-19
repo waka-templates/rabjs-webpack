@@ -2,7 +2,7 @@
 
 const webpack = require('webpack');
 
-const vendors = ['react', 'react-dom', 'rabjs']
+const vendors = ['react', 'react-dom', 'rabjs'];
 
 const {resolve} = require('path')
 
