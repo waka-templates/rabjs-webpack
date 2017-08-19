@@ -46,7 +46,7 @@ module.exports = {
             }
         }),
         new webpack.DllPlugin({
-            path: resolve(__dirname, 'dist', 'manifest.dll.json'),
+            path: resolve(__dirname, 'dist', process.env.NODE_ENV === 'dev' ? 'manifest.dll.dev.json': 'manifest.dll.prod.json'),
             name: '[name]_[chunkhash:8]',
             context: __dirname
         }),

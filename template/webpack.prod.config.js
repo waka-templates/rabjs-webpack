@@ -3,7 +3,6 @@ const {
     resolve
 } = require('path');
 const webpack = require('webpack');
-const path = require('path');
 module.exports = {
     entry: {
         index: './src/index.js'
@@ -67,11 +66,9 @@ module.exports = {
         fabric: 'fabric'
     },
     plugins: [
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.NamedModulesPlugin(),
         new webpack.DllReferencePlugin({
             context: __dirname,
-            manifest: require('./dist/manifest.dll.json')
+            manifest: require('./dist/manifest.dll.prod.json')
         })
     ]
 };
