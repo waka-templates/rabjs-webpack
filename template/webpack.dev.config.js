@@ -1,99 +1,74 @@
-
-const {
-    resolve
-} = require('path');
-const webpack = require('webpack');
+/**
+ * Created by ximing on 2018/8/3.
+ */
+'use strict';
 const path = require('path');
-module.exports = {
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpackMmerge = require('webpack-merge');
+const common = require('./webpack.common.config');
+
+const port = 9126;
+module.exports = webpackMmerge(common, {
+    mode: 'development', // "production" | "development" | "none"
     entry: {
-        'index': [
-            'react-hot-loader/patch',
-            `webpack-dev-server/client?http://127.0.0.1:9006`,
-            'webpack/hot/only-dev-server',
-            './src/index.js'
-        ]
+        app: ['react-hot-loader/patch', './src/main.js']
     },
     output: {
+        path: path.resolve(__dirname, 'dist'),
         filename: '[name].js',
-        sourceMapFilename: '[file].map',
-        path: resolve(__dirname, 'dist'),
-        publicPath: '/dist'
+        publicPath: `http://127.0.0.1:${port}/`
     },
-    devtool: 'cheap-module-eval-source-map',
-
-    devServer: {
-        contentBase: [path.join(__dirname, "html"), path.join(__dirname, "dist")],
-        compress: true,
-        port: parseInt(process.env.PORT) || 9006,
-        host: "0.0.0.0",
-        hot: true,
-        inline: true,
-        publicPath: "/dist/",
-        historyApiFallback: {
-            rewrites: [{
-                from: /^\/$/,
-                to: '/html/index.html'
-            }]
-        },
-        watchContentBase: true
-    },
-    performance: {
-        hints: false
+    optimization: {
+        removeAvailableModules: false,
+        removeEmptyChunks: false,
+        splitChunks: false
     },
     module: {
-        rules: [{
-            test: /\.js$/,
-            use: [{
-                loader: 'babel-loader',
-                options: {
-                    "presets": [
-                        ["es2015", {
-                            "modules": false
-                        }], "stage-0", "react"
-                    ],
-                    "env": {},
-                    "ignore": [
-                        "node_modules/**",
-                        "dist"
-                    ],
-                    "plugins": [
-                        "react-hot-loader/babel",
-                        "transform-decorators-legacy"
-                    ]
-                }
-            }],
-            exclude: [/node_modules/]
-        }, {
-            test: /\.css$/,
-            use: [
-                'style-loader',
-                'css-loader',
-                'postcss-loader'
-            ]
-        }, {
-            test: /\.scss$/,
-            use: [
-                'style-loader',
-                'css-loader',
-                'postcss-loader',
-                'sass-loader'
-            ]
-        }, {
-            test: /\.(png|jpg|jpeg|gif|woff|svg|eot|ttf|woff2)$/i,
-            use: ['url-loader']
-        }]
+        rules: [
+            {
+                test: /\.js?$/,
+                exclude: /(node_modules)/,
+                use: ['react-hot-loader/webpack', 'babel-loader']
+            },
+            {
+                test: /\.html$/,
+                use: [
+                    {
+                        loader: 'html-loader',
+                        options: {
+                            minimize: true
+                        }
+                    }
+                ]
+            }
+        ]
     },
-    externals: {
-        jquery: 'jQuery',
-        lodash: '_',
-        fabric: 'fabric'
+    devtool: 'cheap-module-eval-source-map',
+    context: __dirname,
+    target: 'web',
+    stats: 'errors-only', // lets you precisely control what bundle information gets displayed
+    devServer: {
+        proxy: {},
+        contentBase: path.join(__dirname, 'public'), // boolean | string | array, static file location
+        compress: false, // enable gzip compression
+        historyApiFallback: true, // true for index.html upon 404, object for multiple paths
+        hot: true, // hot module replacement. Depends on HotModuleReplacementPlugin
+        https: false, // true for self-signed, object for cert authority
+        noInfo: false, // only errors & warns on hot reload
+        port,
+        host: '0.0.0.0',
+        disableHostCheck: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+            'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization'
+        }
     },
     plugins: [
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.NamedModulesPlugin(),
-        new webpack.DllReferencePlugin({
-            context: __dirname,
-            manifest: require('./dist/manifest.dll.dev.json')
+        new HtmlWebpackPlugin({
+            template: './src/index.html',
+            chunksSortMode: 'none'
         })
     ]
-};
+});
