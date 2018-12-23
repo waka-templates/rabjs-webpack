@@ -28,7 +28,7 @@ export default class Panel extends Component {
                     'panel panel-inverse': true,
                     'panel-expand': this.state.fixed
                 })}
-                style={{ ...this.renderStyle(), ...style }}
+                style={Object.assign({},this.renderStyle(),style)}
             >
                 <div className="panel-heading">
                     <div className="panel-heading-btn">
