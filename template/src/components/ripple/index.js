@@ -6,10 +6,11 @@ import './index.less';
 import React, { Component } from 'react';
 
 export default function Ripple(props) {
+    const style = {"borderColor":props.borderColor};
     return (
         <div className="lds-ripple">
-            <div style={{ borderColor: props.borderColor }} />
-            <div style={{ borderColor: props.borderColor }} />
+            <div style={style} />
+            <div style={style} />
         </div>
     );
 }
